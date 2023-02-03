@@ -20,7 +20,7 @@ public class ChangeMapSizeInvoke : MonoBehaviour
 
     private void InvokeChangeMapSize()
     {
-        UIObserver.updateMapSizeTypeText?.Invoke(_mapSizeType);
+        MenuController.updateMapSizeTypeText?.Invoke(_mapSizeType);
     }
 
     private void OnDestroy()

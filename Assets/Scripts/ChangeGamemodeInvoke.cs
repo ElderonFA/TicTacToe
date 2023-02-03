@@ -19,7 +19,7 @@ public class ChangeGamemodeInvoke : MonoBehaviour
 
     private void InvokeChangeMapSize()
     {
-        UIObserver.updateGamemodeTypeText?.Invoke(_gameModeType);
+        MenuController.updateGamemodeTypeText?.Invoke(_gameModeType);
     }
 
     private void OnDestroy()
