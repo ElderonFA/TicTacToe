@@ -1,0 +1,14 @@
+Logs
+Temp
+.vs
+obj
+.vsconfig
+*.csproj
+*.sln
+UnityPackages/
+/Builds
+/AssetBundles
+/Library
+.idea
+/ProjectSettings
+/UserSettings
