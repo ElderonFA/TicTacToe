@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class Tile : MonoBehaviour
 {
     private SpriteRenderer image;
+    private bool isUsed;
     private void Start()
     {
         image = GetComponent<SpriteRenderer>();
@@ -20,7 +21,12 @@ public class Tile : MonoBehaviour
 
     private void OnMouseDown()
     {
-        Debug.Log("CLICK!");
+        if (isUsed)
+        {
+            return;
+        }
+
+        isUsed = true;
         GameManager.Instance.MakeMove(this);
     }
 }

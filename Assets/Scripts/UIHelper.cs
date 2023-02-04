@@ -8,6 +8,7 @@ public class UIHelper : MonoBehaviour
 {
     public static Action<CanvasGroup, GameObject> hideCanvasEvent;
     public static Action<CanvasGroup, GameObject> showCanvasEvent;
+    public static Action<CanvasGroup, GameObject> hideCanvasAndDeleteObjEvent;
 
     public static Action<Text, string> showWarning;
 
@@ -15,6 +16,8 @@ public class UIHelper : MonoBehaviour
     {
         hideCanvasEvent += HideCanvasGroup;
         showCanvasEvent += ShowCanvasGroup;
+        hideCanvasAndDeleteObjEvent += HideCanvasAndDeleteObj;
+            
         showWarning += ShowWarning;
     }
 
@@ -54,7 +57,12 @@ public class UIHelper : MonoBehaviour
     {
         StartCoroutine(ShowCanvasGroupCoroutine(canvasGroup, gameObject));
     }
-    
+
+    private void HideCanvasAndDeleteObj(CanvasGroup canvasGroup, GameObject gameObject)
+    {
+        StartCoroutine(HideCanvasAndDeleteObjCoroutine(canvasGroup, gameObject));
+    }
+
     private IEnumerator HideCanvasGroupCoroutine(CanvasGroup canvasGroup, GameObject gameObject)
     {
         var alpha = canvasGroup.alpha;
@@ -87,9 +95,23 @@ public class UIHelper : MonoBehaviour
         }
     }
     
+    private IEnumerator HideCanvasAndDeleteObjCoroutine(CanvasGroup canvasGroup, GameObject gameObject)
+    {
+        var alpha = canvasGroup.alpha;
+        while (alpha > 0)
+        {
+            alpha -= Time.deltaTime;
+            canvasGroup.alpha = alpha;
+            yield return null;
+        }
+
+        Destroy(gameObject);
+    }
+    
     private void OnDestroy()
     {
         hideCanvasEvent -= HideCanvasGroup;
         showCanvasEvent -= ShowCanvasGroup;
+        hideCanvasAndDeleteObjEvent -= HideCanvasAndDeleteObj;
     }
 }
