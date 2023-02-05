@@ -19,13 +19,13 @@ namespace PopUps
 
         private void Exit()
         {
-            GameManager.Instance.exitGameEvent?.Invoke();
+            GameManager.Instance.ExitGameEvent?.Invoke();
             Close();
         }
 
         private void Replay()
         {
-            GameManager.Instance.replayGameEvent?.Invoke();
+            GameManager.Instance.ReplayGameEvent?.Invoke();
             Close();
         }
 

@@ -40,7 +40,7 @@ public class PauseController : MonoBehaviour
     private void ExitFromGame()
     {
         UIHelper.hideCanvasEvent?.Invoke(pauseCanvasGroup, null);
-        GameManager.Instance.exitGameEvent?.Invoke();
+        GameManager.Instance.ExitGameEvent?.Invoke();
         GameManager.Instance.gameIsPaused = false;
     }
 

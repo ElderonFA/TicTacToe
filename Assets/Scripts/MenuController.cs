@@ -54,7 +54,7 @@ public class MenuController : MonoBehaviour
         updateMapSizeTypeText += ChangeMapSizeType;
         updateGamemodeTypeText += ChangeGameModeType;
 
-        GameManager.Instance.exitGameEvent += OpenMainMenu;
+        GameManager.Instance.ExitGameEvent += OpenMainMenu;
     }
 
     private void OpenMainMenu()
@@ -96,7 +96,7 @@ public class MenuController : MonoBehaviour
 
         UIHelper.hideCanvasEvent?.Invoke(playMenuCanvasGroup, playMenuObject);
         
-        GameManager.Instance.startGameEvent(_mapSizeType, _gameModeType);
+        GameManager.Instance.StartGameEvent(_mapSizeType, _gameModeType);
     }
     
     private void ChangeMapSizeType(MapSizeType mapSizeType)
@@ -130,7 +130,7 @@ public class MenuController : MonoBehaviour
         
         startButton.onClick.RemoveAllListeners();
         
-        GameManager.Instance.exitGameEvent -= OpenMainMenu;
+        GameManager.Instance.ExitGameEvent -= OpenMainMenu;
     }
 }
 

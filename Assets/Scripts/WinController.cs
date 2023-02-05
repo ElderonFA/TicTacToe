@@ -42,12 +42,17 @@ public class WinController
         Debug.Log(s);
     }
     
-    public void CheckWin()
+    public void CheckWin(int currentStep)
     {
         CheckHorizontalWin();
         CheckVerticalWin();
         CheckDiagonalUpperLeftWin();
         CheckDiagonalUpperRightWin();
+        
+        if (currentStep == mapSize * mapSize)
+        {
+            GameManager.Instance.DrawGameEvent?.Invoke();
+        }
     }
 
     private void CheckHorizontalWin()
@@ -82,7 +87,7 @@ public class WinController
 
                 if (winCounter == countToWin)
                 {
-                    GameManager.Instance.winGameEvent?.Invoke(lastPlayer);
+                    GameManager.Instance.WinGameEvent?.Invoke(lastPlayer);
                     
                     Debug.Log(
                         "Horizontal WIN! " + 
@@ -126,7 +131,7 @@ public class WinController
 
                 if (winCounter == countToWin)
                 {
-                    GameManager.Instance.winGameEvent?.Invoke(lastPlayer);
+                    GameManager.Instance.WinGameEvent?.Invoke(lastPlayer);
                     
                     Debug.Log(
                         "Vertical WIN! " + 
@@ -161,7 +166,7 @@ public class WinController
             currentLineElement++;
         }
         
-        GameManager.Instance.winGameEvent?.Invoke(lastPlayer);
+        GameManager.Instance.WinGameEvent?.Invoke(lastPlayer);
         
         Debug.Log("Diagonal UpperLeft WIN! " + lastPlayer.GetName + " is winner!");
     }
@@ -188,7 +193,7 @@ public class WinController
             currentLineElement--;
         }
         
-        GameManager.Instance.winGameEvent?.Invoke(lastPlayer);
+        GameManager.Instance.WinGameEvent?.Invoke(lastPlayer);
         
         Debug.Log("Diagonal UpperRight WIN! " + lastPlayer.GetName + " is winner!");
     }

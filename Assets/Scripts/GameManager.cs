@@ -52,10 +52,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] 
     private List<Text> playersWinTexts;
     
-    public Action<MapSizeType, GameModeType> startGameEvent;
-    public Action exitGameEvent;
-    public Action replayGameEvent;
-    public Action<Player> winGameEvent;
+    public Action<MapSizeType, GameModeType> StartGameEvent;
+    public Action ExitGameEvent;
+    public Action ReplayGameEvent;
+    public Action<Player> WinGameEvent;
+    public Action DrawGameEvent;
 
     private Action onFirstPlayerNameEnter;
     private Action<Tile, Player> onMakeMove;
@@ -69,6 +70,8 @@ public class GameManager : MonoBehaviour
     private PlayersHandler playersHandler;
     private WinController winController;
 
+    private int currentStep;
+
     private void Awake()
     {
         Initialize();
@@ -76,11 +79,12 @@ public class GameManager : MonoBehaviour
 
     private void Initialize()
     {
-        startGameEvent += PrepareGame;
-        exitGameEvent += ExitGame;
+        StartGameEvent += PrepareGame;
+        ReplayGameEvent += ReplayGame;
+        ExitGameEvent += ExitGame;
 
-        winGameEvent += WinGame;
-        replayGameEvent += ReplayGame;
+        WinGameEvent += WinGame;
+        DrawGameEvent += DrawGame;
 
         if (Instance == null)
         {
@@ -194,6 +198,8 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        currentStep++;
+
         var currentPlayer = playersHandler.GetCurrentPlayer;
 
         onMakeMove?.Invoke(tile, currentPlayer);
@@ -202,7 +208,7 @@ public class GameManager : MonoBehaviour
 
         tile.SetImage(currentPlayer.moveIcon);
         
-        winController.CheckWin();
+        winController.CheckWin(currentStep);
     }
     
     private void WinGame(Player winPlayer)
@@ -214,7 +220,17 @@ public class GameManager : MonoBehaviour
 
         var popupObject = Instantiate(winPopUp, mainCanvasTransform);
         
-        popupObject.SetHeaderText("Winner is " + winPlayer.GetName + "!");
+        popupObject.SetHeaderText("The winner is " + winPlayer.GetName + "!");
+        popupObject.Show();
+    }
+    
+    private void DrawGame()
+    {
+        gameIsPaused = true;
+        
+        var popupObject = Instantiate(winPopUp, mainCanvasTransform);
+        
+        popupObject.SetHeaderText("It's a draw!");
         popupObject.Show();
     }
 
@@ -226,6 +242,7 @@ public class GameManager : MonoBehaviour
     private void ReplayGame()
     {
         gameIsPaused = false;
+        currentStep = 0;
         
         Tile.reloadTile?.Invoke();
 
