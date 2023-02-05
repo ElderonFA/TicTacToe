@@ -183,6 +183,7 @@ public class GameManager : MonoBehaviour
 
     private void StartGame(int size)
     {
+        currentStep = 0;
         gameIsPaused = false;
         
         winController = new WinController(size);
