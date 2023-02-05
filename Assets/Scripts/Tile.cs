@@ -7,8 +7,12 @@ using UnityEngine.UI;
 [RequireComponent(typeof(SpriteRenderer))]
 public class Tile : MonoBehaviour
 {
+    public TilePosition TilePosition;
+    
     private SpriteRenderer image;
-    private bool isUsed;
+    [HideInInspector]
+    public bool isUsed;
+
     private void Start()
     {
         image = GetComponent<SpriteRenderer>();
@@ -29,4 +33,11 @@ public class Tile : MonoBehaviour
         isUsed = true;
         GameManager.Instance.MakeMove(this);
     }
+}
+
+[Serializable]
+public class TilePosition
+{
+    public int linePos;
+    public int columnPos;
 }

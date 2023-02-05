@@ -17,17 +17,21 @@ public class PlayersHandler
     private Vector2 startIndicatorPosition;
     private List<Vector2> indicatorPositions = new List<Vector2>();
     
-    public void Initialize(int currentPlayerIndex)
+    public PlayersHandler(int setCurrentPlayerIndex)
     {
         FirstPlayer = new Player();
         SecondPlayer = new Player();
-        currentPlayer = currentPlayerIndex == 0 ? FirstPlayer : SecondPlayer;
+        
+        currentPlayerIndex = setCurrentPlayerIndex;
+        currentPlayer = setCurrentPlayerIndex == 0 ? FirstPlayer : SecondPlayer;
     }
     
     public void ChangeCurrentPlayer()
     {
         currentPlayerIndex = currentPlayerIndex == 0 ? 1 : 0;
         currentPlayer = currentPlayer == FirstPlayer ? SecondPlayer : FirstPlayer;
+
+        UpdateIndicatorPosition();
     }
 
     public void SetIndicatorData(
@@ -50,7 +54,7 @@ public class PlayersHandler
         UpdateIndicatorPosition();
     }
 
-    public void UpdateIndicatorPosition()
+    private void UpdateIndicatorPosition()
     {
         playerIndicatorTransform.position = indicatorPositions[currentPlayerIndex];
     }

@@ -542,6 +542,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8714619209937494493}
     m_Modifications:
+    - target: {fileID: 1743437343203596944, guid: d08c02cb938e27741af2a18b33c847cb, type: 3}
+      propertyPath: TilePosition.linePos
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1743437343853518888, guid: d08c02cb938e27741af2a18b33c847cb, type: 3}
       propertyPath: m_Name
       value: TileContainer4
@@ -644,6 +648,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8714619209937494493}
     m_Modifications:
+    - target: {fileID: 1743437343203596944, guid: d08c02cb938e27741af2a18b33c847cb, type: 3}
+      propertyPath: TilePosition.linePos
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1743437343203596944, guid: d08c02cb938e27741af2a18b33c847cb, type: 3}
+      propertyPath: TilePosition.columnPos
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1743437343853518888, guid: d08c02cb938e27741af2a18b33c847cb, type: 3}
       propertyPath: m_Name
       value: TileContainer8
@@ -746,6 +758,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8714619209937494493}
     m_Modifications:
+    - target: {fileID: 1743437343203596944, guid: d08c02cb938e27741af2a18b33c847cb, type: 3}
+      propertyPath: TilePosition.columnPos
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1743437343853518888, guid: d08c02cb938e27741af2a18b33c847cb, type: 3}
       propertyPath: m_Name
       value: TileContainer2
@@ -848,6 +864,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8714619209937494493}
     m_Modifications:
+    - target: {fileID: 1743437343203596944, guid: d08c02cb938e27741af2a18b33c847cb, type: 3}
+      propertyPath: TilePosition.linePos
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1743437343203596944, guid: d08c02cb938e27741af2a18b33c847cb, type: 3}
+      propertyPath: TilePosition.columnPos
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 1743437343853518888, guid: d08c02cb938e27741af2a18b33c847cb, type: 3}
       propertyPath: m_Name
       value: TileContainer9
@@ -950,6 +974,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8714619209937494493}
     m_Modifications:
+    - target: {fileID: 1743437343203596944, guid: d08c02cb938e27741af2a18b33c847cb, type: 3}
+      propertyPath: TilePosition.columnPos
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 1743437343853518888, guid: d08c02cb938e27741af2a18b33c847cb, type: 3}
       propertyPath: m_Name
       value: TileContainer3
@@ -1052,6 +1080,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8714619209937494493}
     m_Modifications:
+    - target: {fileID: 1743437343203596944, guid: d08c02cb938e27741af2a18b33c847cb, type: 3}
+      propertyPath: TilePosition.linePos
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1743437343203596944, guid: d08c02cb938e27741af2a18b33c847cb, type: 3}
+      propertyPath: TilePosition.columnPos
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1743437343853518888, guid: d08c02cb938e27741af2a18b33c847cb, type: 3}
       propertyPath: m_Name
       value: TileContainer5
@@ -1154,6 +1190,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8714619209937494493}
     m_Modifications:
+    - target: {fileID: 1743437343203596944, guid: d08c02cb938e27741af2a18b33c847cb, type: 3}
+      propertyPath: TilePosition.linePos
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 1743437343853518888, guid: d08c02cb938e27741af2a18b33c847cb, type: 3}
       propertyPath: m_Name
       value: TileContainer7
@@ -1256,6 +1296,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 8714619209937494493}
     m_Modifications:
+    - target: {fileID: 1743437343203596944, guid: d08c02cb938e27741af2a18b33c847cb, type: 3}
+      propertyPath: TilePosition.linePos
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1743437343203596944, guid: d08c02cb938e27741af2a18b33c847cb, type: 3}
+      propertyPath: TilePosition.columnPos
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 1743437343853518888, guid: d08c02cb938e27741af2a18b33c847cb, type: 3}
       propertyPath: m_Name
       value: TileContainer6

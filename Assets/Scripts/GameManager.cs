@@ -45,8 +45,10 @@ public class GameManager : MonoBehaviour
     
     public Action<MapSizeType, GameModeType> startGameEvent;
     public Action exitGameEvent;
+    public Action winGameEvent;
 
     private Action onFirstPlayerNameEnter;
+    private Action<Tile, Player> onMakeMove;
 
     public static GameManager Instance;
 
@@ -55,6 +57,7 @@ public class GameManager : MonoBehaviour
     public bool gameIsPaused = true;
 
     private PlayersHandler playersHandler;
+    private WinController winController;
 
     private void Awake()
     {
@@ -74,16 +77,15 @@ public class GameManager : MonoBehaviour
         menuController.Initialize();
         pauseController.Initialize();
         uiHelper.Initialize();
-
-        playersHandler = new PlayersHandler();
-        playersHandler.Initialize(Random.Range(0, 2));
-        playersHandler.SetIndicatorData(currentPlayerIndicator, playerOneNameText.transform, playerTwoNameText.transform);
     }
 
     private void PrepareGame(MapSizeType mapSizeType, GameModeType gameModeType)
     {
         playerOneNameText.gameObject.SetActive(true);
         playerTwoNameText.gameObject.SetActive(true);
+        
+        playersHandler = new PlayersHandler(Random.Range(0, 2));
+        playersHandler.SetIndicatorData(currentPlayerIndicator, playerOneNameText.transform, playerTwoNameText.transform);
         
         switch (gameModeType)
         {
@@ -125,16 +127,17 @@ public class GameManager : MonoBehaviour
 
         void CreateMapWithSizeType()
         {
-            currentMap = mapSizeType switch
+            switch (mapSizeType)
             {
-                MapSizeType.ThreeXThree => Instantiate(map3),
-                MapSizeType.FiveXFive => Instantiate(map5),
-                _ => currentMap
-            };
-
-            gameIsPaused = false;
-
-            StartGameEvent();
+                case MapSizeType.ThreeXThree:
+                    currentMap = Instantiate(map3);
+                    StartGame(new TileDataPlayer[3,3]);
+                    break;
+                case MapSizeType.FiveXFive:
+                    currentMap = Instantiate(map5);
+                    StartGame(new TileDataPlayer[5,5]);
+                    break;
+            }
         }
 
         void SetFirstPlayer(string nameFirst)
@@ -154,8 +157,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void StartGameEvent()
+    private void StartGame(TileDataPlayer [,] arr)
     {
+        gameIsPaused = false;
+        
+        winController = new WinController(arr);
+
+        onMakeMove += winController.UpdateMapData;
+
         playersHandler.ShowPlayerIndicator();
     }
 
@@ -165,11 +174,16 @@ public class GameManager : MonoBehaviour
         {
             return;
         }
-        
+
         var currentPlayer = playersHandler.GetCurrentPlayer;
-        tile.SetImage(currentPlayer.moveIcon);
+
+        onMakeMove?.Invoke(tile, currentPlayer);
+        
         playersHandler.ChangeCurrentPlayer();
-        playersHandler.UpdateIndicatorPosition();
+
+        tile.SetImage(currentPlayer.moveIcon);
+        
+        winController.CheckWin();
     }
 
     private void HideGameInterface()
@@ -187,6 +201,14 @@ public class GameManager : MonoBehaviour
     {
         HideGameInterface();
         Destroy(currentMap);
+
+        
+        playersHandler = null;
+        
+        onMakeMove -= winController.UpdateMapData;
+        winController = null;
+        
+        Console.Clear();
     }
 
     public void CloseApp()
