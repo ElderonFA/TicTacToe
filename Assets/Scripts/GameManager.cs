@@ -28,11 +28,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] 
     private GameObject map5;
     
-    [Header("Images")]
+    [Header("Sprites and Images")]
     [SerializeField] 
     private Sprite cross;
     [SerializeField] 
     private Sprite circle;
+    [SerializeField] 
+    private Image loadImage;
     
     [Header("PopUp")]
     [SerializeField] 
@@ -64,6 +66,8 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
     [HideInInspector]
     public bool gameIsPaused = true;
+    private bool nowComputerMove;
+    private bool gameIsEnd;
 
     private GameObject currentMap;
 
@@ -71,6 +75,9 @@ public class GameManager : MonoBehaviour
     private WinController winController;
 
     private int currentStep;
+    public int maxStep;
+
+    public List<Tile> tilesForComputerPlayer;
 
     private void Awake()
     {
@@ -189,31 +196,97 @@ public class GameManager : MonoBehaviour
 
         playersHandler.UpdateIndicatorPosition();
         UIHelper.showCanvasEvent?.Invoke(gameInterfaceCanvas, gameInterfaceCanvas.gameObject);
+
+        if (playersHandler.GetCurrentPlayer.IsComputer)
+        {
+            StartCoroutine(ComputerMove());
+        }
     }
 
     public void MakeMove(Tile tile)
     {
-        if (gameIsPaused)
+        if (gameIsPaused || nowComputerMove)
         {
+            return;
+        }
+        
+        var currentPlayer = playersHandler.GetCurrentPlayer;
+
+        if (currentPlayer.IsComputer && !nowComputerMove)
+        {
+            StartCoroutine(ComputerMove());
             return;
         }
 
         currentStep++;
-
-        var currentPlayer = playersHandler.GetCurrentPlayer;
-
+        
         onMakeMove?.Invoke(tile, currentPlayer);
+        tilesForComputerPlayer.Remove(tilesForComputerPlayer.Find(x => x == tile));
         
         playersHandler.ChangeCurrentPlayer();
 
         tile.SetImage(currentPlayer.moveIcon);
         
         winController.CheckWin(currentStep);
+
+        if (playersHandler.GetCurrentPlayer.IsComputer)
+        {
+            StartCoroutine(ComputerMove());
+        }
+    }
+
+    private IEnumerator ComputerMove()
+    {
+        if (gameIsEnd)
+        {
+            yield break;
+        }
+        
+        nowComputerMove = true;
+        
+        var timeDelay = 1f;
+        var fillCount = 0f;
+        
+        currentStep++;
+
+        while (timeDelay > 0f)
+        {
+            timeDelay -= Time.deltaTime;
+
+            fillCount += Time.deltaTime;
+            loadImage.fillAmount = fillCount;
+            
+            yield return null;
+        }
+
+        loadImage.fillAmount = 0f;
+
+        var indexTile = Random.Range(0, tilesForComputerPlayer.Count);
+        var computerTile = tilesForComputerPlayer[indexTile];
+        var currentPlayer = playersHandler.GetCurrentPlayer;
+        
+        onMakeMove?.Invoke(computerTile, currentPlayer);
+        
+        playersHandler.ChangeCurrentPlayer();
+        
+        computerTile.SetImage(currentPlayer.moveIcon);
+        
+        winController.CheckWin(currentStep);
+        
+        tilesForComputerPlayer.RemoveAt(indexTile);
+
+        nowComputerMove = false;
+
+        if (playersHandler.GetCurrentPlayer.IsComputer && currentStep != maxStep)
+        {
+            StartCoroutine(ComputerMove());
+        }
     }
     
     private void WinGame(Player winPlayer)
     {
         gameIsPaused = true;
+        gameIsEnd = true;
 
         winPlayer.CountWin++;
         UpdateCounterPlayer(winPlayer);
@@ -242,11 +315,18 @@ public class GameManager : MonoBehaviour
     private void ReplayGame()
     {
         gameIsPaused = false;
+        gameIsEnd = false;
         currentStep = 0;
+        tilesForComputerPlayer = new List<Tile>();
         
         Tile.reloadTile?.Invoke();
 
         winController.ReloadMapData();
+
+        if (playersHandler.GetCurrentPlayer.IsComputer)
+        {
+            StartCoroutine(ComputerMove());
+        }
     }
 
     private void HideGameInterface()

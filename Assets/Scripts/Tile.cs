@@ -26,6 +26,8 @@ public class Tile : MonoBehaviour
     {
         isUsed = false;
         SetImage(null);
+        
+        GameManager.Instance.tilesForComputerPlayer.Add(this);
     }
 
     public void SetImage(Sprite sprite)

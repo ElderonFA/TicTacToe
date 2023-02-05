@@ -25,7 +25,8 @@ public class WinController
     {
         currentMapData[tile.TilePosition.linePos, tile.TilePosition.columnPos]= new TileDataPlayer(usedPlayer);
 
-        var s = "";
+        //Debug map values
+        /*var s = "";
         
         for (var i = 0; i < lines; i++)
         {
@@ -39,15 +40,30 @@ public class WinController
             s += "\n";
         }
         
-        Debug.Log(s);
+        Debug.Log(s);*/
     }
     
     public void CheckWin(int currentStep)
     {
-        CheckHorizontalWin();
-        CheckVerticalWin();
-        CheckDiagonalUpperLeftWin();
-        CheckDiagonalUpperRightWin();
+        if (CheckHorizontalWin())
+        {
+            return;
+        }
+        
+        if (CheckVerticalWin())
+        {
+            return;
+        }
+        
+        if (CheckDiagonalUpperLeftWin())
+        {
+            return;
+        }
+        
+        if (CheckDiagonalUpperRightWin())
+        {
+            return;
+        }
         
         if (currentStep == mapSize * mapSize)
         {
@@ -55,7 +71,7 @@ public class WinController
         }
     }
 
-    private void CheckHorizontalWin()
+    private bool CheckHorizontalWin()
     {
         for (var i = 0; i < lines; i++)
         {
@@ -93,13 +109,15 @@ public class WinController
                         "Horizontal WIN! " + 
                         lastPlayer.GetName + " is winner! " +
                         "On horizontal line - " + i);
-                    return;
+                    return true;
                 }
             }
         }
+
+        return false;
     }
     
-    private void CheckVerticalWin()
+    private bool CheckVerticalWin()
     {
         for (var i = 0; i < lines; i++)
         {
@@ -138,13 +156,15 @@ public class WinController
                         lastPlayer.GetName + " is winner! " +
                         "On vertical line - " + i);
                     
-                    return;
+                    return true;
                 }
             }
         }
+
+        return false;
     }
 
-    private void CheckDiagonalUpperLeftWin()
+    private bool CheckDiagonalUpperLeftWin()
     {
         Player lastPlayer = null;
         var currentLineElement = 0;
@@ -154,12 +174,12 @@ public class WinController
             var item = currentMapData[i, currentLineElement];
             if (item == null)
             {
-                return;
+                return false;
             }
 
             if (lastPlayer != null && lastPlayer != item.usedByPlayer)
             {
-                return;
+                return false;
             }
 
             lastPlayer = item.usedByPlayer;
@@ -169,9 +189,11 @@ public class WinController
         GameManager.Instance.WinGameEvent?.Invoke(lastPlayer);
         
         Debug.Log("Diagonal UpperLeft WIN! " + lastPlayer.GetName + " is winner!");
+        
+        return true;
     }
 
-    private void CheckDiagonalUpperRightWin()
+    private bool CheckDiagonalUpperRightWin()
     {
         Player lastPlayer = null;
         var currentLineElement = columns - 1;
@@ -181,12 +203,12 @@ public class WinController
             var item = currentMapData[i, currentLineElement];
             if (item == null)
             {
-                return;
+                return false;
             }
 
             if (lastPlayer != null && item.usedByPlayer != lastPlayer)
             {
-                return;
+                return false;
             }
 
             lastPlayer = item.usedByPlayer;
@@ -196,6 +218,8 @@ public class WinController
         GameManager.Instance.WinGameEvent?.Invoke(lastPlayer);
         
         Debug.Log("Diagonal UpperRight WIN! " + lastPlayer.GetName + " is winner!");
+        
+        return true;
     }
 
     public void ReloadMapData()
