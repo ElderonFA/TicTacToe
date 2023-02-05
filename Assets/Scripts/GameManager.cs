@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
 {
     [Header ("Transforms")]
     [SerializeField] 
-    private Transform mainCanvas;
+    private Transform mainCanvasTransform;
     [SerializeField] 
     private Transform currentPlayerIndicator;
     
@@ -39,26 +39,32 @@ public class GameManager : MonoBehaviour
     private EnterNamePopUp enterNamePopUp;
     [SerializeField] 
     private WinPopUp winPopUp;
-    
+
+    [Header("Canvas")] 
+    [SerializeField] 
+    private CanvasGroup gameInterfaceCanvas;
+
     [Header("Texts")]
     [SerializeField] 
     private Text playerOneNameText;
     [SerializeField] 
     private Text playerTwoNameText;
+    [SerializeField] 
+    private List<Text> playersWinTexts;
     
     public Action<MapSizeType, GameModeType> startGameEvent;
     public Action exitGameEvent;
     public Action replayGameEvent;
-    public Action<string> winGameEvent;
+    public Action<Player> winGameEvent;
 
     private Action onFirstPlayerNameEnter;
     private Action<Tile, Player> onMakeMove;
 
     public static GameManager Instance;
+    [HideInInspector]
+    public bool gameIsPaused = true;
 
     private GameObject currentMap;
-
-    public bool gameIsPaused = true;
 
     private PlayersHandler playersHandler;
     private WinController winController;
@@ -97,7 +103,7 @@ public class GameManager : MonoBehaviour
         switch (gameModeType)
         {
             case GameModeType.PvsC:
-                var popUpEnterName = Instantiate(enterNamePopUp, mainCanvas);
+                var popUpEnterName = Instantiate(enterNamePopUp, mainCanvasTransform);
                 popUpEnterName.Show();
                 
                 popUpEnterName.onConfirm += SetFirstPlayer;
@@ -108,10 +114,10 @@ public class GameManager : MonoBehaviour
                 break;
             
             case GameModeType.PvsP:
-                var popUpEnterNameFirst = Instantiate(enterNamePopUp, mainCanvas);
+                var popUpEnterNameFirst = Instantiate(enterNamePopUp, mainCanvasTransform);
                 popUpEnterNameFirst.SetHeaderText("Enter first player name:");
                 
-                var popUpEnterNameSecond = Instantiate(enterNamePopUp, mainCanvas);
+                var popUpEnterNameSecond = Instantiate(enterNamePopUp, mainCanvasTransform);
                 popUpEnterNameSecond.SetHeaderText("Enter second player name:");
                 
                 popUpEnterNameFirst.Show();
@@ -172,7 +178,13 @@ public class GameManager : MonoBehaviour
 
         onMakeMove += winController.UpdateMapData;
 
-        playersHandler.ShowPlayerIndicator();
+        foreach (var playerText in playersWinTexts)
+        {
+            playerText.text = "0";
+        }
+
+        playersHandler.UpdateIndicatorPosition();
+        UIHelper.showCanvasEvent?.Invoke(gameInterfaceCanvas, gameInterfaceCanvas.gameObject);
     }
 
     public void MakeMove(Tile tile)
@@ -193,16 +205,24 @@ public class GameManager : MonoBehaviour
         winController.CheckWin();
     }
     
-    private void WinGame(string playerName)
+    private void WinGame(Player winPlayer)
     {
         gameIsPaused = true;
+
+        winPlayer.CountWin++;
+        UpdateCounterPlayer(winPlayer);
+
+        var popupObject = Instantiate(winPopUp, mainCanvasTransform);
         
-        var popupObject = Instantiate(winPopUp, mainCanvas);
-        
-        popupObject.SetHeaderText("Winner is " + playerName + "!");
+        popupObject.SetHeaderText("Winner is " + winPlayer.GetName + "!");
         popupObject.Show();
     }
-    
+
+    private void UpdateCounterPlayer(Player player)
+    {
+        playersWinTexts[player.index].text = player.CountWin.ToString();
+    }
+
     private void ReplayGame()
     {
         gameIsPaused = false;
@@ -214,13 +234,7 @@ public class GameManager : MonoBehaviour
 
     private void HideGameInterface()
     {
-        playerOneNameText.gameObject.SetActive(false);
-        playerTwoNameText.gameObject.SetActive(false);
-
-        playerOneNameText.text = "";
-        playerTwoNameText.text = "";
-        
-        playersHandler.HideIndicator();
+        UIHelper.hideCanvasEvent?.Invoke(gameInterfaceCanvas, gameInterfaceCanvas.gameObject);
     }
 
     private void ExitGame()

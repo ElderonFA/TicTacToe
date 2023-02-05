@@ -18,10 +18,14 @@ public class Player
         isComputer = true;
     }
 
-    public Sprite moveIcon;
+    public int CountWin;
 
-    public Player()
+    public Sprite moveIcon;
+    public int index;
+
+    public Player(int index)
     {
+        this.index = index;
         this.isComputer = false;
     }
 }

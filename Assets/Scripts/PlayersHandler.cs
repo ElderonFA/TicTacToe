@@ -10,8 +10,6 @@ public class PlayersHandler
     
     private Player currentPlayer;
     public Player GetCurrentPlayer => currentPlayer;
-    
-    private int currentPlayerIndex;
 
     private Transform playerIndicatorTransform;
     private Vector2 startIndicatorPosition;
@@ -19,16 +17,14 @@ public class PlayersHandler
     
     public PlayersHandler(int setCurrentPlayerIndex)
     {
-        FirstPlayer = new Player();
-        SecondPlayer = new Player();
+        FirstPlayer = new Player(0);
+        SecondPlayer = new Player(1);
         
-        currentPlayerIndex = setCurrentPlayerIndex;
         currentPlayer = setCurrentPlayerIndex == 0 ? FirstPlayer : SecondPlayer;
     }
     
     public void ChangeCurrentPlayer()
     {
-        currentPlayerIndex = currentPlayerIndex == 0 ? 1 : 0;
         currentPlayer = currentPlayer == FirstPlayer ? SecondPlayer : FirstPlayer;
 
         UpdateIndicatorPosition();
@@ -47,20 +43,9 @@ public class PlayersHandler
         var indicatorPositionTwo = new Vector2(startIndicatorPosition.x, playerTwoTextPosition.position.y);
         indicatorPositions.Add(indicatorPositionTwo);    
     }
-    
-    public void ShowPlayerIndicator()
-    {
-        playerIndicatorTransform.gameObject.SetActive(true);
-        UpdateIndicatorPosition();
-    }
 
-    private void UpdateIndicatorPosition()
+    public void UpdateIndicatorPosition()
     {
-        playerIndicatorTransform.position = indicatorPositions[currentPlayerIndex];
-    }
-
-    public void HideIndicator()
-    {
-        playerIndicatorTransform.gameObject.SetActive(false);
+        playerIndicatorTransform.position = indicatorPositions[currentPlayer.index];
     }
 }
