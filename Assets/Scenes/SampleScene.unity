@@ -3086,6 +3086,7 @@ MonoBehaviour:
   cross: {fileID: 21300000, guid: 432df9bcd055af84f9e4765f448f6ed0, type: 3}
   circle: {fileID: 21300000, guid: bd73d07e770ba88409c5eeb65d089ff8, type: 3}
   enterNamePopUp: {fileID: 1846642006782491948, guid: 07c87b7b2cee7164ea39467a338343f3, type: 3}
+  winPopUp: {fileID: 5524868046871355836, guid: 93fa52f8ff561d34fa19f6e41d2c1f11, type: 3}
   playerOneNameText: {fileID: 41681710}
   playerTwoNameText: {fileID: 693448169}
   gameIsPaused: 1
@@ -3570,7 +3571,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: bd73d07e770ba88409c5eeb65d089ff8, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ebf59ac19cf83bb458285e8481d767df, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

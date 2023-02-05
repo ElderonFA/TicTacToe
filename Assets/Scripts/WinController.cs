@@ -5,21 +5,20 @@ using UnityEngine;
 public class WinController
 {
     private TileDataPlayer[,] currentMapData;
+    private int mapSize;
     
     private int lines;
     private int columns;
     private int countToWin;
-    
-    private int winCounter;
 
-    public WinController(TileDataPlayer[,] mapData)
+    public WinController(int size)
     {
-        currentMapData = mapData;
+        currentMapData = new TileDataPlayer[size,size];
+        mapSize = size;
+        countToWin = size;
         
         lines = currentMapData.GetUpperBound(0) + 1;
         columns = currentMapData.Length / lines;
-
-        countToWin = lines;
     }
     
     public void UpdateMapData(Tile tile, Player usedPlayer)
@@ -56,32 +55,40 @@ public class WinController
         for (var i = 0; i < lines; i++)
         {
             Player lastPlayer = null;
-            winCounter = 0;
+            var winCounter = 0;
             
             for (var j = 0; j < columns; j++)
             {
                 var item = currentMapData[i, j];
-                
-                winCounter++;
 
                 if (item == null)
                 {
                     continue;
                 }
+                
+                if (lastPlayer == null)
+                {
+                    winCounter++;
+                    lastPlayer = item.usedByPlayer;
+                    continue;
+                }
 
-                if (lastPlayer != null && lastPlayer != item.usedByPlayer)
+                if (lastPlayer != item.usedByPlayer)
                 {
                     continue;
                 }
 
-                lastPlayer = item.usedByPlayer;
+                winCounter++;
 
                 if (winCounter == countToWin)
                 {
+                    GameManager.Instance.winGameEvent?.Invoke(lastPlayer.GetName);
+                    
                     Debug.Log(
                         "Horizontal WIN! " + 
                         lastPlayer.GetName + " is winner! " +
                         "On horizontal line - " + i);
+                    return;
                 }
             }
         }
@@ -92,31 +99,41 @@ public class WinController
         for (var i = 0; i < lines; i++)
         {
             Player lastPlayer = null;
-            winCounter = 0;
+            var winCounter = 0;
             
             for (var j = 0; j < columns; j++)
             {
                 var item = currentMapData[j, i];
-                winCounter++;
 
                 if (item == null)
                 {
                     continue;
                 }
 
-                if (lastPlayer != null && lastPlayer != item.usedByPlayer)
+                if (lastPlayer == null)
+                {
+                    winCounter++;
+                    lastPlayer = item.usedByPlayer;
+                    continue;
+                }
+
+                if (lastPlayer != item.usedByPlayer)
                 {
                     continue;
                 }
 
-                lastPlayer = item.usedByPlayer;
+                winCounter++;
 
                 if (winCounter == countToWin)
                 {
+                    GameManager.Instance.winGameEvent?.Invoke(lastPlayer.GetName);
+                    
                     Debug.Log(
                         "Vertical WIN! " + 
                         lastPlayer.GetName + " is winner! " +
                         "On vertical line - " + i);
+                    
+                    return;
                 }
             }
         }
@@ -144,6 +161,8 @@ public class WinController
             currentLineElement++;
         }
         
+        GameManager.Instance.winGameEvent?.Invoke(lastPlayer.GetName);
+        
         Debug.Log("Diagonal UpperLeft WIN! " + lastPlayer.GetName + " is winner!");
     }
 
@@ -169,7 +188,14 @@ public class WinController
             currentLineElement--;
         }
         
+        GameManager.Instance.winGameEvent?.Invoke(lastPlayer.GetName);
+        
         Debug.Log("Diagonal UpperRight WIN! " + lastPlayer.GetName + " is winner!");
+    }
+
+    public void ReloadMapData()
+    {
+        currentMapData = new TileDataPlayer[mapSize, mapSize];
     }
 }
 

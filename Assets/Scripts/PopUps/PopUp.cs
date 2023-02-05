@@ -1,9 +1,29 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public interface PopUp
+namespace PopUps
 {
-    void Show();
-    void Close();
+    public class PopUp : MonoBehaviour
+    {
+        [SerializeField]
+        private CanvasGroup canvasGroup;
+        [Space] 
+        [SerializeField] private Text headerText;
+    
+        public void Show()
+        {
+            gameObject.SetActive(true);
+            UIHelper.showCanvasEvent?.Invoke(canvasGroup, null);
+        }
+
+        protected void Close()
+        {
+            UIHelper.hideCanvasAndDeleteObjEvent(canvasGroup, gameObject);
+        }
+    
+        public void SetHeaderText(string text)
+        {
+            headerText.text = text;
+        }
+    }
 }

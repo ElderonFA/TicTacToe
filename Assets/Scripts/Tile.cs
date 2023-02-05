@@ -13,9 +13,19 @@ public class Tile : MonoBehaviour
     [HideInInspector]
     public bool isUsed;
 
+    public static Action reloadTile;
+
     private void Start()
     {
         image = GetComponent<SpriteRenderer>();
+
+        reloadTile += ReloadTile;
+    }
+
+    private void ReloadTile()
+    {
+        isUsed = false;
+        SetImage(null);
     }
 
     public void SetImage(Sprite sprite)
@@ -32,6 +42,11 @@ public class Tile : MonoBehaviour
 
         isUsed = true;
         GameManager.Instance.MakeMove(this);
+    }
+
+    private void OnDestroy()
+    {
+        reloadTile -= ReloadTile;
     }
 }
 

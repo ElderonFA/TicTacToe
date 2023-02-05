@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using PopUps;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -36,6 +37,8 @@ public class GameManager : MonoBehaviour
     [Header("PopUp")]
     [SerializeField] 
     private EnterNamePopUp enterNamePopUp;
+    [SerializeField] 
+    private WinPopUp winPopUp;
     
     [Header("Texts")]
     [SerializeField] 
@@ -45,7 +48,8 @@ public class GameManager : MonoBehaviour
     
     public Action<MapSizeType, GameModeType> startGameEvent;
     public Action exitGameEvent;
-    public Action winGameEvent;
+    public Action replayGameEvent;
+    public Action<string> winGameEvent;
 
     private Action onFirstPlayerNameEnter;
     private Action<Tile, Player> onMakeMove;
@@ -68,6 +72,9 @@ public class GameManager : MonoBehaviour
     {
         startGameEvent += PrepareGame;
         exitGameEvent += ExitGame;
+
+        winGameEvent += WinGame;
+        replayGameEvent += ReplayGame;
 
         if (Instance == null)
         {
@@ -131,11 +138,11 @@ public class GameManager : MonoBehaviour
             {
                 case MapSizeType.ThreeXThree:
                     currentMap = Instantiate(map3);
-                    StartGame(new TileDataPlayer[3,3]);
+                    StartGame(3);
                     break;
                 case MapSizeType.FiveXFive:
                     currentMap = Instantiate(map5);
-                    StartGame(new TileDataPlayer[5,5]);
+                    StartGame(5);
                     break;
             }
         }
@@ -157,11 +164,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void StartGame(TileDataPlayer [,] arr)
+    private void StartGame(int size)
     {
         gameIsPaused = false;
         
-        winController = new WinController(arr);
+        winController = new WinController(size);
 
         onMakeMove += winController.UpdateMapData;
 
@@ -185,6 +192,25 @@ public class GameManager : MonoBehaviour
         
         winController.CheckWin();
     }
+    
+    private void WinGame(string playerName)
+    {
+        gameIsPaused = true;
+        
+        var popupObject = Instantiate(winPopUp, mainCanvas);
+        
+        popupObject.SetHeaderText("Winner is " + playerName + "!");
+        popupObject.Show();
+    }
+    
+    private void ReplayGame()
+    {
+        gameIsPaused = false;
+        
+        Tile.reloadTile?.Invoke();
+
+        winController.ReloadMapData();
+    }
 
     private void HideGameInterface()
     {
@@ -196,19 +222,16 @@ public class GameManager : MonoBehaviour
         
         playersHandler.HideIndicator();
     }
-    
+
     private void ExitGame()
     {
         HideGameInterface();
         Destroy(currentMap);
 
-        
         playersHandler = null;
         
         onMakeMove -= winController.UpdateMapData;
         winController = null;
-        
-        Console.Clear();
     }
 
     public void CloseApp()
